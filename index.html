@@ -3,277 +3,464 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Decision Journal — what you decided, what you predicted, what actually happened</title>
+<title>Decision Journal · the bet</title>
 <meta name="description" content="Log non-trivial decisions with predictions, alternatives, and review dates. Compare prediction vs outcome over time to calibrate your judgment.">
-<meta property="og:title" content="Decision Journal — what you decided, what you predicted, what actually happened">
+<meta property="og:title" content="Decision Journal · the bet">
 <meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=EB+Garamond:ital,wght@0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #f5f1ea;
-    --panel: #fffcf6;
-    --ink: #1d1812;
-    --ink-soft: #6b5a44;
-    --ink-faint: #a89880;
-    --accent: #3a5c4a;
-    --accent-light: #6d8b7a;
-    --warn: #b85c2e;
-    --done: #4a7c3d;
-    --border: #ddd3c0;
-    --serif: Georgia, "Times New Roman", serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--ink);
-    line-height: 1.6;
-    min-height: 100vh;
-    padding: 1rem;
-  }
-  .container { max-width: 720px; margin: 0 auto; }
-  header { text-align: center; padding: 2rem 0; }
-  header h1 {
-    font-family: var(--serif);
-    font-size: clamp(2rem, 6vw, 2.6rem);
-    color: var(--accent);
-    margin-bottom: 0.4rem;
-    letter-spacing: -0.01em;
-  }
-  header p {
-    color: var(--ink-soft);
-    font-style: italic;
-    font-size: 0.95rem;
-    max-width: 480px;
-    margin: 0 auto;
-  }
+/*  ============================================================
+    DECISION JOURNAL · "The Bet"
+    -----------------------------------------------------------
+    Theme: a green-felt betting parlor / poker room. Every
+    decision IS a bet. Confidence levels are poker chips.
+    Calibration is showing your hand at the end of a hand.
+    ============================================================ */
 
-  .tabs {
-    display: flex;
-    gap: 0.4rem;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .tab {
-    padding: 0.55rem 1.1rem;
-    background: transparent;
-    color: var(--ink-soft);
-    border: 1px solid var(--border);
-    border-radius: 999px;
-    font-family: inherit;
-    font-size: 0.85rem;
-    cursor: pointer;
-  }
-  .tab.active {
-    background: var(--accent);
-    color: var(--bg);
-    border-color: var(--accent);
-  }
-  .tab:hover:not(.active) { border-color: var(--accent); color: var(--ink); }
+:root{
+  --felt:#0d2818;
+  --felt-deep:#081e10;
+  --felt-light:#143a23;
+  --felt-rule:#1f4a30;
+  --cream:#e8dcb9;
+  --cream-dim:#bfb38f;
+  --cream-faint:#8c8366;
+  --card:#f5ead0;
+  --card-shadow:#0a1f10;
+  --brass:#c9a558;
+  --brass-bright:#e8c97a;
+  --card-red:#b03028;
+  --card-red-light:#d05848;
+  --suit-black:#0a0a0a;
+  --sage:#7a9b50;
+  --rule:rgba(232, 220, 185, 0.16);
+  --rule-strong:rgba(232, 220, 185, 0.35);
 
-  .panel {
-    background: var(--panel);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    box-shadow: 0 1px 3px rgba(29,24,18,0.06);
-  }
-  .panel h2 {
-    font-family: var(--serif);
-    font-size: 1.1rem;
-    color: var(--accent);
-    margin-bottom: 0.75rem;
-  }
+  --display:'DM Serif Display', Georgia, serif;
+  --body:'EB Garamond', Georgia, serif;
+  --mono:'JetBrains Mono', ui-monospace, monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{
+  background:var(--felt);color:var(--cream);
+  font-family:var(--body);font-weight:400;
+  -webkit-font-smoothing:antialiased;
+  font-size:17px;line-height:1.55;
+  min-height:100vh;
+}
+body{
+  /* Felt texture — radial vignette + repeating fiber noise */
+  background-image:
+    radial-gradient(ellipse 70% 50% at 50% 0%, rgba(20, 58, 35, 0.7) 0%, transparent 80%),
+    radial-gradient(ellipse 80% 60% at 50% 100%, rgba(8, 30, 16, 0.6) 0%, transparent 70%);
+  background-color:var(--felt);
+  position:relative;
+}
+body::before{
+  content:"";position:fixed;inset:0;pointer-events:none;z-index:1;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='1.6' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23f)' opacity='0.45'/></svg>");
+  opacity:0.12;mix-blend-mode:overlay;
+}
+/* Decorative card-suit ornaments along the edges */
+body::after{
+  content:"♠ ♥ ♦ ♣";
+  position:fixed;top:14px;right:24px;
+  font-family:var(--display);font-size:16px;letter-spacing:1.4em;
+  color:var(--brass);opacity:0.45;
+  z-index:2;pointer-events:none;
+}
 
-  label {
-    display: block;
-    color: var(--accent);
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-    margin: 1.25rem 0 0.4rem;
-    font-weight: 600;
-  }
-  label:first-child { margin-top: 0; }
-  label .helper {
-    color: var(--ink-faint);
-    font-size: 0.7rem;
-    text-transform: none;
-    letter-spacing: 0;
-    font-weight: normal;
-    font-style: italic;
-    margin-left: 0.4rem;
-  }
+.container{
+  max-width:760px;margin:0 auto;padding:0 28px;
+  position:relative;z-index:3;
+}
 
-  input[type="text"], input[type="date"], input[type="number"], textarea, select {
-    width: 100%;
-    border: 1px solid var(--border);
-    background: #fff;
-    border-radius: 6px;
-    padding: 0.7rem 0.95rem;
-    color: var(--ink);
-    font-family: inherit;
-    font-size: 0.95rem;
-    line-height: 1.5;
-  }
-  textarea { min-height: 80px; resize: vertical; }
-  input:focus, textarea:focus, select:focus {
-    outline: none; border-color: var(--accent);
-  }
+/* ============================================================
+   HEADER — marquee
+   ============================================================ */
+header{
+  text-align:center;
+  padding:64px 0 36px;
+  border-bottom:1.5px solid var(--brass);
+  position:relative;
+}
+header::before, header::after{
+  content:"";position:absolute;left:0;right:0;
+  height:1px;background:var(--brass);opacity:0.4;
+}
+header::before{bottom:-5px}
+header h1{
+  font-family:var(--display);font-weight:400;font-style:italic;
+  font-size:62px;line-height:1;color:var(--cream);
+  letter-spacing:-0.005em;margin:0;
+}
+header h1::first-letter{color:var(--brass-bright)}
+header p{
+  font-family:var(--body);font-style:italic;font-weight:400;
+  font-size:17px;color:var(--cream-dim);
+  margin-top:16px;max-width:480px;margin-left:auto;margin-right:auto;
+  line-height:1.4;
+}
+.header-mark{
+  display:block;width:56px;height:56px;
+  margin:0 auto 16px;
+}
 
-  button {
-    background: var(--ink);
-    color: var(--bg);
-    border: none;
-    padding: 0.7rem 1.3rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: inherit;
-    font-size: 0.9rem;
-    font-weight: 500;
-  }
-  button:hover { background: var(--accent); }
-  button.ghost {
-    background: transparent;
-    color: var(--ink-soft);
-    border: 1px solid var(--border);
-  }
-  button.ghost:hover { background: var(--bg); color: var(--ink); border-color: var(--accent); }
+/* ============================================================
+   TABS — like dealer's position indicators
+   ============================================================ */
+.tabs{
+  display:flex;justify-content:center;gap:0;
+  margin-top:32px;margin-bottom:32px;
+  border-top:1px solid var(--rule-strong);
+  border-bottom:1px solid var(--rule-strong);
+  background:var(--felt-deep);
+  flex-wrap:wrap;
+  position:sticky;top:0;z-index:5;
+}
+.tab{
+  background:transparent;border:none;cursor:pointer;
+  font-family:var(--mono);font-size:10.5px;letter-spacing:0.22em;
+  text-transform:uppercase;color:var(--cream-faint);
+  padding:16px 18px;
+  border-right:1px solid var(--rule);
+  transition:all .15s;
+  position:relative;
+}
+.tab:last-child{border-right:none}
+.tab:hover{color:var(--cream-dim);background:rgba(201, 165, 88, 0.06)}
+.tab.active{color:var(--brass-bright);background:rgba(201, 165, 88, 0.1)}
+.tab.active::after{
+  content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--brass)}
 
-  .row { display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 1rem; }
+/* ============================================================
+   PANELS — table positions
+   ============================================================ */
+.panel{
+  background:var(--felt-light);
+  border:1px solid var(--rule-strong);
+  border-radius:0;
+  padding:32px 36px;
+  margin-bottom:24px;
+  box-shadow:
+    inset 0 1px 0 rgba(201, 165, 88, 0.1),
+    0 8px 24px rgba(0, 0, 0, 0.4);
+  position:relative;
+}
+.panel::before{
+  /* corner gold-bracket ornament */
+  content:"";position:absolute;top:8px;left:8px;
+  width:18px;height:18px;
+  border-top:1px solid var(--brass);
+  border-left:1px solid var(--brass);
+  opacity:0.5;
+}
+.panel::after{
+  content:"";position:absolute;bottom:8px;right:8px;
+  width:18px;height:18px;
+  border-bottom:1px solid var(--brass);
+  border-right:1px solid var(--brass);
+  opacity:0.5;
+}
+.panel h2{
+  font-family:var(--display);font-weight:400;font-style:italic;
+  font-size:32px;color:var(--cream);
+  margin-bottom:18px;letter-spacing:-0.005em;
+  line-height:1.05;
+}
+.panel h2 .suit{color:var(--card-red);font-style:normal;margin-right:8px}
 
-  .confidence-row {
-    display: flex;
-    gap: 0.4rem;
-    flex-wrap: wrap;
-    margin-top: 0.4rem;
-  }
-  .confidence-row button {
-    background: transparent;
-    color: var(--accent);
-    border: 1px solid var(--border);
-    padding: 0.4rem 0.75rem;
-    font-size: 0.85rem;
-    font-weight: 400;
-  }
-  .confidence-row button.selected {
-    background: var(--accent);
-    color: var(--bg);
-    border-color: var(--accent);
-  }
+/* The dealer's quote */
+.quote{
+  background:transparent;
+  border:none;border-top:1px solid var(--brass);border-bottom:1px solid var(--brass);
+  padding:14px 0;margin:14px 0 24px;
+  font-family:var(--body);font-style:italic;
+  color:var(--cream-dim);font-size:15.5px;
+  line-height:1.55;text-align:center;
+  position:relative;
+}
+.quote::before{
+  content:"♠ ♥ ♦ ♣";
+  display:block;
+  font-family:var(--display);font-size:11px;letter-spacing:1em;
+  color:var(--brass);opacity:0.7;margin-bottom:10px;
+  text-align:center;
+}
 
-  .card {
-    padding: 1.25rem 0;
-    border-bottom: 1px solid var(--border);
-  }
-  .card:last-child { border-bottom: none; }
-  .card .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 0.5rem;
-    gap: 0.5rem;
-  }
-  .card .header .title {
-    font-family: var(--serif);
-    color: var(--accent);
-    font-size: 1.1rem;
-    flex: 1;
-  }
-  .card .meta {
-    color: var(--ink-faint);
-    font-size: 0.78rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    margin-bottom: 0.5rem;
-  }
-  .card .body { color: var(--ink); margin-bottom: 0.6rem; }
-  .card .body .label {
-    color: var(--accent);
-    font-weight: 600;
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    margin-top: 0.6rem;
-    display: block;
-  }
-  .card .body .content {
-    white-space: pre-wrap;
-    color: var(--ink);
-    font-size: 0.95rem;
-  }
-  .card .status-pill {
-    display: inline-block;
-    padding: 0.2rem 0.6rem;
-    border-radius: 999px;
-    font-size: 0.7rem;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    font-weight: 600;
-  }
-  .status-pill.pending { background: #f0e5dc; color: var(--warn); }
-  .status-pill.reviewed { background: #e8f0e2; color: var(--done); }
-  .status-pill.due { background: #fde8a8; color: #8a6a1a; }
+/* ============================================================
+   FORMS
+   ============================================================ */
+label{
+  display:block;font-family:var(--mono);font-size:10.5px;
+  letter-spacing:0.22em;text-transform:uppercase;
+  color:var(--brass);margin:22px 0 8px;font-weight:500;
+}
+label:first-of-type{margin-top:0}
+label .helper{
+  color:var(--cream-faint);font-size:9.5px;letter-spacing:0.08em;
+  text-transform:none;font-weight:400;font-style:italic;
+  margin-left:8px;
+}
 
-  .stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.6rem;
-  }
-  @media (max-width: 480px) { .stats { grid-template-columns: repeat(2, 1fr); } }
-  .stat {
-    text-align: center;
-    padding: 0.85rem 0.4rem;
-    background: var(--bg);
-    border-radius: 8px;
-  }
-  .stat .n {
-    font-family: var(--serif);
-    font-size: 1.6rem;
-    color: var(--accent);
-    line-height: 1.1;
-  }
-  .stat .l {
-    font-size: 0.72rem;
-    color: var(--ink-soft);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    margin-top: 0.25rem;
-  }
+input[type=text], input[type=date], textarea, select{
+  width:100%;
+  background:rgba(8, 30, 16, 0.5);
+  border:1px solid var(--rule-strong);
+  color:var(--cream);
+  font-family:var(--body);font-size:17px;line-height:1.5;
+  padding:11px 14px;border-radius:0;outline:none;
+  transition:border .12s;
+}
+textarea{min-height:88px;resize:vertical;font-style:italic}
+input:focus, textarea:focus, select:focus{border-color:var(--brass)}
+input::placeholder, textarea::placeholder{color:var(--cream-faint);font-style:italic}
 
-  .empty {
-    text-align: center;
-    color: var(--ink-faint);
-    padding: 1.5rem 0;
-    font-style: italic;
-  }
+/* ============================================================
+   CONFIDENCE — POKER CHIPS
+   ============================================================ */
+.confidence-row{
+  display:flex;gap:10px;margin-top:12px;
+  flex-wrap:wrap;justify-content:center;
+  padding:18px 8px;
+  background:radial-gradient(ellipse at center, rgba(8, 30, 16, 0.5) 0%, transparent 70%);
+  border-top:1px dashed var(--rule);
+  border-bottom:1px dashed var(--rule);
+}
+.confidence-row button{
+  width:78px;height:78px;
+  border-radius:50%;
+  background:radial-gradient(circle at 35% 30%, var(--cream-faint) 0%, var(--cream-faint) 30%, #5a4f3a 65%, var(--suit-black) 100%);
+  border:3px dashed var(--cream-dim);
+  color:var(--cream);
+  font-family:var(--display);font-style:italic;
+  font-size:18px;font-weight:400;
+  cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  box-shadow:
+    inset 0 -3px 6px rgba(0, 0, 0, 0.5),
+    inset 0 3px 6px rgba(255, 255, 255, 0.15),
+    0 3px 6px rgba(0, 0, 0, 0.6);
+  transition:all .15s;
+  padding:0;letter-spacing:-0.02em;
+}
+.confidence-row button:hover{transform:translateY(-3px)}
+.confidence-row button.selected{
+  background:radial-gradient(circle at 35% 30%, var(--brass-bright) 0%, var(--brass) 35%, #6a4a18 70%, var(--suit-black) 100%);
+  border-color:var(--brass-bright);
+  color:var(--suit-black);
+  box-shadow:
+    inset 0 -3px 6px rgba(0, 0, 0, 0.55),
+    inset 0 3px 6px rgba(255, 255, 255, 0.3),
+    0 4px 10px rgba(201, 165, 88, 0.5);
+}
+.confidence-row button::after{
+  content:attr(data-c) "%";
+  position:absolute;bottom:-22px;left:50%;transform:translateX(-50%);
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.12em;
+  color:var(--cream-faint);font-style:normal;text-transform:none;
+}
+.confidence-row button.selected::after{color:var(--brass-bright)}
 
-  footer {
-    text-align: center;
-    margin-top: 2rem;
-    color: var(--ink-faint);
-    font-size: 0.8rem;
-    line-height: 1.6;
-  }
-  footer a { color: var(--accent); text-decoration: none; }
+.confidence-row{margin-bottom:32px}
 
-  .quote {
-    background: var(--bg);
-    border-left: 3px solid var(--accent);
-    padding: 0.75rem 1rem;
-    border-radius: 4px;
-    font-style: italic;
-    color: var(--ink-soft);
-    font-size: 0.88rem;
-    margin: 1rem 0;
-  }
+/* ============================================================
+   BUTTONS — felt-table action bars
+   ============================================================ */
+button{
+  font-family:var(--mono);font-size:11.5px;letter-spacing:0.18em;text-transform:uppercase;
+  background:var(--brass);color:var(--suit-black);border:none;
+  padding:14px 22px;cursor:pointer;
+  transition:all .15s;font-weight:600;
+}
+button:hover{background:var(--brass-bright)}
+button.ghost{
+  background:transparent;color:var(--cream-dim);
+  border:1px solid var(--cream-faint);
+}
+button.ghost:hover{background:var(--cream-faint);color:var(--suit-black);border-color:var(--cream-faint)}
+
+.row{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}
+
+#save-btn{
+  background:var(--brass);color:var(--suit-black);
+  padding:16px 32px;font-weight:700;letter-spacing:0.2em;font-size:12.5px;
+  margin:0 auto;display:block;
+  border:2px solid var(--brass-bright);
+}
+#save-btn:hover{background:var(--brass-bright)}
+#save-btn::before{content:"♠ ";color:var(--card-red)}
+#save-btn::after{content:" ♠";color:var(--card-red)}
+
+/* ============================================================
+   CARDS — betting slips
+   ============================================================ */
+.card{
+  background:var(--card);color:var(--suit-black);
+  padding:18px 22px;margin-bottom:14px;
+  border-radius:0;
+  box-shadow:
+    0 1px 0 var(--brass),
+    0 4px 12px rgba(0, 0, 0, 0.4);
+  position:relative;
+}
+.card::before{
+  content:"";position:absolute;
+  top:-1px;right:-1px;width:32px;height:32px;
+  background:linear-gradient(225deg, var(--card) 0%, var(--card) 50%, transparent 50%);
+  border-bottom:1px solid var(--cream-faint);
+  border-left:1px solid var(--cream-faint);
+}
+.card .header{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  gap:14px;margin-bottom:10px;
+}
+.card .header .title{
+  font-family:var(--display);font-style:italic;font-weight:400;
+  color:var(--suit-black);font-size:22px;flex:1;line-height:1.2;
+}
+.card .meta{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.14em;
+  color:#5a4a32;margin-bottom:10px;text-transform:uppercase;
+}
+.card .body .label{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.18em;text-transform:uppercase;
+  color:var(--card-red);font-weight:600;
+  margin-top:10px;display:block;
+}
+.card .body .content{
+  font-family:var(--body);font-size:15.5px;color:var(--suit-black);
+  white-space:pre-wrap;line-height:1.5;font-style:italic;
+}
+.status-pill{
+  display:inline-block;
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.16em;text-transform:uppercase;
+  padding:4px 10px;font-weight:600;
+}
+.status-pill.pending{background:transparent;color:#5a4a32;border:1px solid #5a4a32}
+.status-pill.reviewed{background:var(--sage);color:var(--card);border:1px solid var(--sage)}
+.status-pill.due{background:var(--card-red);color:var(--card);border:1px solid var(--card-red)}
+
+.card .row button{
+  font-family:var(--mono);font-size:10px;letter-spacing:0.16em;
+  background:var(--suit-black);color:var(--card);
+  padding:7px 14px;border:none;
+}
+.card .row button.ghost{
+  background:transparent;color:#5a4a32;border:1px solid #b8a780;
+}
+.card .row button.ghost:hover{background:#b8a780;color:var(--suit-black)}
+
+/* ============================================================
+   STATS — dealer's tray
+   ============================================================ */
+.stats{
+  display:grid;grid-template-columns:repeat(4, 1fr);gap:0;
+  border:1.5px solid var(--brass);
+  margin-bottom:24px;
+  background:var(--felt-deep);
+}
+@media(max-width:520px){
+  .stats{grid-template-columns:repeat(2, 1fr)}
+  .stat:nth-child(2n){border-right:none !important}
+  .stat:nth-child(-n+2){border-bottom:1px solid var(--rule)}
+}
+.stat{
+  text-align:center;padding:22px 12px;
+  border-right:1px solid var(--rule);
+}
+.stat:last-child{border-right:none}
+.stat .n{
+  font-family:var(--display);font-style:italic;font-weight:400;
+  font-size:38px;color:var(--brass-bright);line-height:1;letter-spacing:-0.02em;
+  display:block;
+}
+.stat .l{
+  font-family:var(--mono);font-size:9.5px;letter-spacing:0.2em;
+  color:var(--cream-faint);text-transform:uppercase;margin-top:10px;
+  display:block;
+}
+
+#cal-chart{
+  background:var(--felt-deep) !important;
+  border:1px solid var(--brass) !important;
+  padding:18px !important;border-radius:0 !important;
+}
+#cal-table{
+  font-family:var(--mono);font-size:13.5px;
+}
+
+#all-search{margin-bottom:18px}
+
+.empty{
+  text-align:center;color:var(--cream-faint);
+  font-family:var(--body);font-style:italic;font-size:15px;
+  padding:36px 0;
+}
+
+/* ============================================================
+   FOOTER — colophon
+   ============================================================ */
+footer{
+  text-align:center;margin-top:36px;padding:32px 0 48px;
+  border-top:1.5px solid var(--brass);
+  position:relative;
+}
+footer::before{
+  content:"♠ ♥ ♦ ♣";
+  display:block;
+  font-family:var(--display);font-size:14px;letter-spacing:1em;
+  color:var(--brass);opacity:0.6;margin-bottom:18px;
+}
+footer p{
+  font-family:var(--body);font-style:italic;font-size:14px;
+  color:var(--cream-faint);line-height:1.7;
+}
+footer a{color:var(--brass);text-decoration:none;border-bottom:1px dotted var(--brass)}
+footer a:hover{color:var(--brass-bright)}
+.credit{
+  font-family:var(--mono);font-size:9px;letter-spacing:0.42em;
+  color:var(--cream-faint);opacity:0.6;margin-top:18px;
+}
+
+@media(max-width:600px){
+  .container{padding:0 20px}
+  header{padding:42px 0 28px}
+  header h1{font-size:44px}
+  .panel{padding:22px 18px}
+  .panel h2{font-size:24px}
+  .confidence-row button{width:64px;height:64px;font-size:15px}
+  .stat .n{font-size:30px}
+  .tab{padding:13px 11px;font-size:9.5px;letter-spacing:0.18em}
+}
 </style>
 </head>
 <body>
 <div class="container">
 
 <header>
+  <!-- Header mark: ace card with brass border -->
+  <svg class="header-mark" viewBox="0 0 56 56" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <g>
+      <!-- Card body -->
+      <rect x="8" y="4" width="40" height="48" rx="4" fill="#f5ead0" stroke="#c9a558" stroke-width="1.5"/>
+      <!-- Inner border -->
+      <rect x="11" y="7" width="34" height="42" rx="2" fill="none" stroke="#c9a558" stroke-width="0.4" opacity="0.6"/>
+      <!-- Spade -->
+      <g transform="translate(28 28)">
+        <path d="M 0 -10 Q -8 -2 -8 5 Q -8 10 -3 10 Q -1 10 0 8 Q 1 10 3 10 Q 8 10 8 5 Q 8 -2 0 -10 Z" fill="#0a0a0a"/>
+        <path d="M -2 9 L 0 6 L 2 9 L 0 13 Z" fill="#0a0a0a"/>
+      </g>
+      <!-- Corner marks -->
+      <text x="14" y="14" font-family="DM Serif Display, serif" font-size="9" fill="#0a0a0a">A</text>
+      <text x="14" y="20" font-family="serif" font-size="8" fill="#0a0a0a">♠</text>
+      <text x="42" y="46" font-family="DM Serif Display, serif" font-size="9" fill="#0a0a0a" text-anchor="end" transform="rotate(180 42 46)">A</text>
+      <text x="42" y="40" font-family="serif" font-size="8" fill="#0a0a0a" text-anchor="end" transform="rotate(180 42 40)">♠</text>
+    </g>
+  </svg>
   <h1>Decision Journal</h1>
   <p>what you decided, what you predicted, what actually happened</p>
 </header>
@@ -288,7 +475,7 @@
 
 <div id="view-log" class="view">
   <div class="panel">
-    <h2>Log a decision</h2>
+    <h2><span class="suit">♠</span>Log a decision</h2>
     <div class="quote">"In retrospect, every decision looked obvious. But before you knew the outcome, it didn't. Write down what you were thinking when you only had what you had."</div>
 
     <label>Date <span class="helper">when did you make this decision?</span></label>
@@ -306,57 +493,57 @@
     <label>What you're predicting will happen</label>
     <textarea id="d-prediction" placeholder="Be specific. Numbers if you have them. Time-bound."></textarea>
 
-    <label>How confident? <span class="helper">be honest — calibration only works if you're honest</span></label>
+    <label>The chip · how confident? <span class="helper">be honest — calibration only works if you're honest</span></label>
     <div class="confidence-row" id="confidence-row">
-      <button data-c="20">20% — long shot</button>
-      <button data-c="40">40% — leaning</button>
-      <button data-c="55">55% — slight edge</button>
-      <button data-c="70">70% — likely</button>
-      <button data-c="85">85% — quite confident</button>
-      <button data-c="95">95% — very confident</button>
+      <button data-c="20" title="20% — long shot">20</button>
+      <button data-c="40" title="40% — leaning">40</button>
+      <button data-c="55" title="55% — slight edge">55</button>
+      <button data-c="70" title="70% — likely">70</button>
+      <button data-c="85" title="85% — quite confident">85</button>
+      <button data-c="95" title="95% — very confident">95</button>
     </div>
 
     <label>Review date <span class="helper">when can you tell how it turned out?</span></label>
     <input type="date" id="d-reviewdate">
 
     <label>Tag (optional)</label>
-    <input type="text" id="d-tag" placeholder="e.g., career, money, relationship, business, faith">
+    <input type="text" id="d-tag" placeholder="career, money, relationship, business, faith">
 
-    <button id="save-btn" style="margin-top:1.5rem;">Log this decision</button>
+    <button id="save-btn">Place the bet</button>
   </div>
 </div>
 
 <div id="view-due" class="view" style="display:none;">
   <div class="panel">
-    <h2>Decisions due for review</h2>
+    <h2><span class="suit">♥</span>Showing your hand</h2>
     <div id="due-list"></div>
   </div>
 </div>
 
 <div id="view-all" class="view" style="display:none;">
   <div class="panel">
-    <h2>All decisions</h2>
-    <input type="text" id="all-search" placeholder="Search title, decision, prediction, tag" style="margin-bottom:1rem;">
+    <h2><span class="suit">♦</span>All your bets</h2>
+    <input type="text" id="all-search" placeholder="Search title, decision, prediction, tag">
     <div id="all-list"></div>
   </div>
 </div>
 
 <div id="view-stats" class="view" style="display:none;">
   <div class="panel">
-    <h2>Your calibration</h2>
-    <p style="color:var(--ink-soft);font-size:0.88rem;margin-bottom:1rem;">When you said 70%, were you right ~70% of the time? Compare confidence vs actual hit rate across reviewed decisions.</p>
+    <h2><span class="suit">♣</span>Your calibration</h2>
+    <p style="font-family:var(--body);font-style:italic;color:var(--cream-dim);font-size:15px;margin-bottom:20px;line-height:1.5">When you said 70%, were you right ~70% of the time? Compare confidence vs actual hit rate across reviewed decisions.</p>
     <div class="stats" id="stats-grid"></div>
-    <div style="margin-top:1.5rem;">
-      <h2>Calibration chart</h2>
-      <p style="color:var(--ink-soft);font-size:0.85rem;margin-bottom:0.75rem;">Each dot is one confidence bucket. The diagonal is perfect calibration — dots on it mean you're well-calibrated. Above the line = underconfident. Below = overconfident.</p>
-      <div id="cal-chart" style="background:var(--bg-alt);border:1px solid var(--border);border-radius:8px;padding:1rem;"></div>
+    <div style="margin-top:32px;">
+      <h2 style="font-size:20px;margin-bottom:12px"><span class="suit">♣</span>The calibration chart</h2>
+      <p style="font-family:var(--body);font-style:italic;color:var(--cream-dim);font-size:14px;margin-bottom:12px;line-height:1.5">Each dot is one confidence bucket. The diagonal is perfect calibration. Above the line = underconfident. Below = overconfident.</p>
+      <div id="cal-chart"></div>
     </div>
-    <div style="margin-top:1.5rem;">
-      <h2>By confidence bucket</h2>
+    <div style="margin-top:32px;">
+      <h2 style="font-size:20px;margin-bottom:12px"><span class="suit">♣</span>By confidence bucket</h2>
       <div id="cal-table"></div>
     </div>
-    <div style="margin-top:1.5rem;">
-      <h2>By tag</h2>
+    <div style="margin-top:32px;">
+      <h2 style="font-size:20px;margin-bottom:12px"><span class="suit">♣</span>By tag</h2>
       <div id="cal-by-tag"></div>
     </div>
   </div>
@@ -364,19 +551,20 @@
 
 <div id="view-manage" class="view" style="display:none;">
   <div class="panel">
-    <h2>Manage</h2>
+    <h2><span class="suit">♠</span>Manage the table</h2>
     <div class="row">
       <button class="ghost" id="export-btn">Export JSON</button>
       <button class="ghost" id="import-btn">Import JSON</button>
-      <button class="ghost" id="reset-btn" style="color:#b04a4a;border-color:#d8b6b6;">Reset all</button>
+      <button class="ghost" id="reset-btn" style="color:var(--card-red-light);border-color:var(--card-red);">Reset all</button>
       <input type="file" id="import-file" accept=".json" style="display:none;">
     </div>
   </div>
 </div>
 
 <footer>
-  <p>Inspired by Annie Duke (Thinking in Bets) and Shane Parrish's decision journal.<br>
+  <p>Inspired by Annie Duke (<em>Thinking in Bets</em>) and Shane Parrish's decision journal.<br>
   <a href="https://github.com/thebigjah/decision-journal">source</a></p>
+  <div class="credit">— PURCELLVENTURES.CO —</div>
 </footer>
 
 </div>
@@ -406,7 +594,6 @@ function fmtDate(d) {
 
 function initLog() {
   document.getElementById('d-date').value = todayKey();
-  // Default review date to 60 days out
   const r = new Date();
   r.setDate(r.getDate() + 60);
   document.getElementById('d-reviewdate').value = r.toISOString().split('T')[0];
@@ -442,7 +629,7 @@ function saveDecision() {
   }
   decisions.push(d);
   save();
-  alert('Logged. Comes back to you on ' + fmtDate(d.reviewDate) + '.');
+  alert('Bet placed. Comes back to you on ' + fmtDate(d.reviewDate) + '.');
   clearLog();
   initLog();
 }
@@ -457,7 +644,7 @@ function renderDue() {
   const today = todayKey();
   const due = decisions.filter(d => !d.reviewed && (d.reviewDate || '') <= today).sort((a, b) => a.reviewDate.localeCompare(b.reviewDate));
   const el = document.getElementById('due-list');
-  if (!due.length) { el.innerHTML = '<div class="empty">Nothing due for review. Come back another day.</div>'; return; }
+  if (!due.length) { el.innerHTML = '<div class="empty">Nothing showing. The table is quiet — come back another day.</div>'; return; }
   el.innerHTML = due.map(d => renderCard(d, true)).join('');
 }
 
@@ -474,16 +661,16 @@ function renderAll() {
     );
   }
   const el = document.getElementById('all-list');
-  if (!list.length) { el.innerHTML = q ? '<div class="empty">No matches.</div>' : '<div class="empty">No decisions logged yet.</div>'; return; }
+  if (!list.length) { el.innerHTML = q ? '<div class="empty">No matches in the deck.</div>' : '<div class="empty">No bets placed yet.</div>'; return; }
   el.innerHTML = list.map(d => renderCard(d, false)).join('');
 }
 
 function renderCard(d, dueMode) {
   const today = todayKey();
   const isDue = !d.reviewed && (d.reviewDate || '') <= today;
-  const pill = d.reviewed ? `<span class="status-pill reviewed">reviewed${d.correct != null ? (d.correct ? ' · correct' : ' · wrong') : ''}</span>`
-    : isDue ? '<span class="status-pill due">due now</span>'
-    : '<span class="status-pill pending">pending</span>';
+  const pill = d.reviewed ? `<span class="status-pill reviewed">Reviewed${d.correct != null ? (d.correct ? ' · Won' : ' · Lost') : ''}</span>`
+    : isDue ? '<span class="status-pill due">Show your hand</span>'
+    : '<span class="status-pill pending">Pending</span>';
   return `
     <div class="card">
       <div class="header">
@@ -498,8 +685,8 @@ function renderCard(d, dueMode) {
         ${d.outcome ? `<span class="label">Outcome</span><div class="content">${escapeHtml(d.outcome)}</div>` : ''}
       </div>
       <div class="row">
-        ${!d.reviewed ? `<button onclick="reviewDecision('${d.id}')" style="padding:0.4rem 0.9rem;font-size:0.85rem;">Review now</button>` : ''}
-        <button class="ghost" onclick="deleteDecision('${d.id}')" style="padding:0.4rem 0.9rem;font-size:0.85rem;">Delete</button>
+        ${!d.reviewed ? `<button onclick="reviewDecision('${d.id}')">Show your hand</button>` : ''}
+        <button class="ghost" onclick="deleteDecision('${d.id}')">Delete</button>
       </div>
     </div>
   `;
@@ -521,7 +708,7 @@ window.reviewDecision = (id) => {
   renderDue();
   renderAll();
   renderStats();
-  alert('Review saved. Your calibration page will reflect this.');
+  alert('Review saved. Calibration updated.');
 };
 
 window.deleteDecision = (id) => {
@@ -538,13 +725,12 @@ function renderStats() {
   const dueNow = decisions.filter(d => !d.reviewed && (d.reviewDate || '') <= todayKey()).length;
 
   document.getElementById('stats-grid').innerHTML = `
-    <div class="stat"><div class="n">${total}</div><div class="l">logged</div></div>
-    <div class="stat"><div class="n">${reviewed}</div><div class="l">reviewed</div></div>
-    <div class="stat"><div class="n">${reviewed ? Math.round(correct / reviewed * 100) : 0}%</div><div class="l">accuracy</div></div>
-    <div class="stat"><div class="n">${dueNow}</div><div class="l">due now</div></div>
+    <div class="stat"><div class="n">${total}</div><div class="l">Bets placed</div></div>
+    <div class="stat"><div class="n">${reviewed}</div><div class="l">Shown</div></div>
+    <div class="stat"><div class="n">${reviewed ? Math.round(correct / reviewed * 100) : 0}%</div><div class="l">Hit rate</div></div>
+    <div class="stat"><div class="n">${dueNow}</div><div class="l">To show</div></div>
   `;
 
-  // Calibration by bucket
   const buckets = [20, 40, 55, 70, 85, 95];
   const rows = buckets.map(b => {
     const inBucket = decisions.filter(d => d.reviewed && d.confidence === b);
@@ -554,66 +740,62 @@ function renderStats() {
     return { b, total, hits, actual };
   });
 
-  // === Calibration SVG chart =================================================
-  // 320x320 viewport, padded inside; x = stated %, y = actual %; diagonal = perfect calibration
+  // === Calibration SVG chart — green felt theme ===
   const PAD = 36, W = 320, H = 320;
   const scale = (pct) => PAD + (pct / 100) * (W - 2 * PAD);
-  const yScale = (pct) => (H - PAD) - (pct / 100) * (H - 2 * PAD); // y flipped
+  const yScale = (pct) => (H - PAD) - (pct / 100) * (H - 2 * PAD);
   const gridLines = [0, 20, 40, 55, 70, 85, 95, 100];
-  const gridX = gridLines.map(g => `<line x1="${scale(g)}" y1="${PAD}" x2="${scale(g)}" y2="${H - PAD}" stroke="${g % 20 === 0 ? '#d8cbb0' : '#ece4d3'}" stroke-width="${g === 50 ? 0 : 0.5}" />`).join('');
-  const gridY = gridLines.map(g => `<line x1="${PAD}" y1="${yScale(g)}" x2="${W - PAD}" y2="${yScale(g)}" stroke="${g % 20 === 0 ? '#d8cbb0' : '#ece4d3'}" stroke-width="0.5" />`).join('');
-  // Diagonal reference line (y = x)
-  const diagonal = `<line x1="${scale(0)}" y1="${yScale(0)}" x2="${scale(100)}" y2="${yScale(100)}" stroke="#b89540" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.6" />`;
-  // X tick labels
-  const xLabels = [20, 40, 60, 80, 100].map(g => `<text x="${scale(g)}" y="${H - 12}" font-family="ui-monospace,monospace" font-size="10" fill="#6b5a44" text-anchor="middle">${g}%</text>`).join('');
-  const yLabels = [0, 25, 50, 75, 100].map(g => `<text x="${PAD - 6}" y="${yScale(g) + 3}" font-family="ui-monospace,monospace" font-size="10" fill="#6b5a44" text-anchor="end">${g}%</text>`).join('');
-  // Axis titles
+  const gridX = gridLines.map(g => `<line x1="${scale(g)}" y1="${PAD}" x2="${scale(g)}" y2="${H - PAD}" stroke="${g % 20 === 0 ? '#1f4a30' : '#143a23'}" stroke-width="0.5" />`).join('');
+  const gridY = gridLines.map(g => `<line x1="${PAD}" y1="${yScale(g)}" x2="${W - PAD}" y2="${yScale(g)}" stroke="${g % 20 === 0 ? '#1f4a30' : '#143a23'}" stroke-width="0.5" />`).join('');
+  const diagonal = `<line x1="${scale(0)}" y1="${yScale(0)}" x2="${scale(100)}" y2="${yScale(100)}" stroke="#c9a558" stroke-width="1.5" stroke-dasharray="4,4" opacity="0.75" />`;
+  const xLabels = [20, 40, 60, 80, 100].map(g => `<text x="${scale(g)}" y="${H - 12}" font-family="JetBrains Mono, monospace" font-size="10" fill="#bfb38f" text-anchor="middle">${g}%</text>`).join('');
+  const yLabels = [0, 25, 50, 75, 100].map(g => `<text x="${PAD - 6}" y="${yScale(g) + 3}" font-family="JetBrains Mono, monospace" font-size="10" fill="#bfb38f" text-anchor="end">${g}%</text>`).join('');
   const axisTitles = `
-    <text x="${W/2}" y="${H - 2}" font-family="Georgia, serif" font-style="italic" font-size="11" fill="#6b5a44" text-anchor="middle">stated confidence</text>
-    <text x="12" y="${H/2}" font-family="Georgia, serif" font-style="italic" font-size="11" fill="#6b5a44" text-anchor="middle" transform="rotate(-90 12 ${H/2})">actual hit rate</text>
+    <text x="${W/2}" y="${H - 2}" font-family="EB Garamond, serif" font-style="italic" font-size="11" fill="#bfb38f" text-anchor="middle">stated confidence</text>
+    <text x="12" y="${H/2}" font-family="EB Garamond, serif" font-style="italic" font-size="11" fill="#bfb38f" text-anchor="middle" transform="rotate(-90 12 ${H/2})">actual hit rate</text>
   `;
-  // Plot dots
   const dots = rows.filter(r => r.actual !== null).map(r => {
     const x = scale(r.b);
     const y = yScale(r.actual);
-    const radius = Math.min(12, 4 + r.total * 1.2);
+    const radius = Math.min(13, 5 + r.total * 1.2);
     const drift = Math.abs(r.actual - r.b);
-    const fill = drift < 15 ? '#4a7c3d' : (drift < 30 ? '#b89540' : '#c46a4a');
+    // Use poker chip colors based on calibration drift
+    const fill = drift < 15 ? '#7a9b50' : (drift < 30 ? '#c9a558' : '#b03028');
     return `
-      <circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" fill-opacity="0.6" stroke="${fill}" stroke-width="1.5" />
-      <text x="${x}" y="${y - radius - 4}" font-family="ui-monospace,monospace" font-size="10" fill="#2d1f0e" text-anchor="middle">${r.b}% → ${r.actual}% (${r.total})</text>
+      <circle cx="${x}" cy="${y}" r="${radius + 2}" fill="${fill}" fill-opacity="0.2" />
+      <circle cx="${x}" cy="${y}" r="${radius}" fill="${fill}" fill-opacity="0.85" stroke="#e8dcb9" stroke-width="1.5" stroke-dasharray="2,2" />
+      <text x="${x}" y="${y - radius - 5}" font-family="JetBrains Mono, monospace" font-size="10" fill="#e8dcb9" text-anchor="middle">${r.b}% → ${r.actual}% (${r.total})</text>
     `;
   }).join('');
 
   const hasData = rows.some(r => r.actual !== null);
   document.getElementById('cal-chart').innerHTML = hasData ? `
-    <svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:420px;display:block;margin:0 auto;">
+    <svg viewBox="0 0 ${W} ${H}" width="100%" style="max-width:440px;display:block;margin:0 auto;">
       ${gridX}${gridY}${diagonal}${dots}${xLabels}${yLabels}${axisTitles}
     </svg>
-    <div style="display:flex;gap:1rem;font-size:0.78rem;color:var(--ink-soft);justify-content:center;margin-top:0.5rem;">
-      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#4a7c3d;vertical-align:middle;margin-right:4px;"></span>well-calibrated</span>
-      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#b89540;vertical-align:middle;margin-right:4px;"></span>some drift</span>
-      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#c46a4a;vertical-align:middle;margin-right:4px;"></span>way off</span>
+    <div style="display:flex;gap:1.4rem;font-family:JetBrains Mono,monospace;font-size:10.5px;color:var(--cream-faint);letter-spacing:0.1em;justify-content:center;margin-top:14px;text-transform:uppercase;">
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#7a9b50;vertical-align:middle;margin-right:6px;"></span>Well-played</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#c9a558;vertical-align:middle;margin-right:6px;"></span>Some drift</span>
+      <span><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#b03028;vertical-align:middle;margin-right:6px;"></span>Way off</span>
     </div>
-  ` : '<div class="empty" style="padding:2rem;text-align:center;color:var(--ink-soft);">No reviewed decisions yet. Log + review some decisions, then come back.</div>';
+  ` : '<div class="empty" style="padding:2rem;text-align:center;">No bets shown yet. Place + review some decisions, then come back.</div>';
 
   document.getElementById('cal-table').innerHTML = `
-    <div style="font-family:ui-monospace,monospace;font-size:0.85rem;">
-      <div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:0.5rem;padding:0.4rem 0;color:var(--ink-faint);font-size:0.78rem;text-transform:uppercase;letter-spacing:0.06em;border-bottom:1px solid var(--border);">
+    <div style="font-family:var(--mono);font-size:13px;">
+      <div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;padding:10px 0;color:var(--cream-faint);font-size:9.5px;text-transform:uppercase;letter-spacing:0.18em;border-bottom:1px solid var(--rule-strong);">
         <span>You said</span><span></span><span>Actual</span><span>N</span>
       </div>
       ${rows.map(r => `
-        <div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:0.5rem;padding:0.4rem 0;border-bottom:1px solid var(--border);align-items:center;">
-          <span style="color:var(--accent);">${r.b}%</span>
-          <span style="color:var(--ink-faint);">${r.total ? '·'.repeat(Math.min(r.total, 30)) : ''}</span>
-          <span style="color:${r.actual == null ? 'var(--ink-faint)' : (Math.abs(r.actual - r.b) < 15 ? 'var(--done)' : 'var(--warn)')};">${r.actual == null ? '—' : r.actual + '%'}</span>
-          <span style="color:var(--ink-soft);">${r.total}</span>
+        <div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:center;">
+          <span style="color:var(--brass-bright);font-family:var(--display);font-style:italic;font-size:18px;">${r.b}%</span>
+          <span style="color:var(--cream-faint);">${r.total ? '●'.repeat(Math.min(r.total, 24)) : ''}</span>
+          <span style="color:${r.actual == null ? 'var(--cream-faint)' : (Math.abs(r.actual - r.b) < 15 ? 'var(--sage)' : 'var(--card-red-light)')};font-family:var(--display);font-style:italic;font-size:18px;">${r.actual == null ? '—' : r.actual + '%'}</span>
+          <span style="color:var(--cream-dim);">${r.total}</span>
         </div>
       `).join('')}
     </div>
   `;
 
-  // By tag
   const tagStats = {};
   decisions.filter(d => d.reviewed).forEach(d => {
     const t = d.tag || '(untagged)';
@@ -623,11 +805,11 @@ function renderStats() {
   });
   const sortedTags = Object.entries(tagStats).sort((a, b) => b[1].total - a[1].total);
   document.getElementById('cal-by-tag').innerHTML = sortedTags.length ? sortedTags.map(([t, s]) => `
-    <div style="display:flex;justify-content:space-between;padding:0.4rem 0;border-bottom:1px solid var(--border);font-size:0.88rem;">
-      <span>${escapeHtml(t)}</span>
-      <span style="color:var(--ink-soft);">${Math.round(s.correct/s.total*100)}% (${s.correct}/${s.total})</span>
+    <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--rule);font-family:var(--body);font-size:15px;">
+      <span style="font-style:italic">${escapeHtml(t)}</span>
+      <span style="color:var(--cream-dim);font-family:var(--mono);font-size:12px;letter-spacing:0.06em;">${Math.round(s.correct/s.total*100)}% (${s.correct}/${s.total})</span>
     </div>
-  `).join('') : '<div class="empty">No reviewed decisions with tags yet.</div>';
+  `).join('') : '<div class="empty">No tagged reviews yet.</div>';
 }
 
 function exportJSON() {
@@ -659,7 +841,7 @@ function importJSON(e) {
 
 function resetAll() {
   if (!confirm('Erase all decisions?')) return;
-  if (!confirm('Really?')) return;
+  if (!confirm('Really? Clear the whole table?')) return;
   localStorage.removeItem(KEY); decisions = [];
   renderAll(); renderDue(); renderStats();
 }
