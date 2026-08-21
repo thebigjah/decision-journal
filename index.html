@@ -51,7 +51,7 @@ html,body{
   min-height:100vh;
 }
 body{
-  /* Felt texture — radial vignette + repeating fiber noise */
+  /* Felt texture, radial vignette + repeating fiber noise */
   background-image:
     radial-gradient(ellipse 70% 50% at 50% 0%, rgba(20, 58, 35, 0.7) 0%, transparent 80%),
     radial-gradient(ellipse 80% 60% at 50% 100%, rgba(8, 30, 16, 0.6) 0%, transparent 70%);
@@ -78,7 +78,7 @@ body::after{
 }
 
 /* ============================================================
-   HEADER — marquee
+   HEADER, marquee
    ============================================================ */
 header{
   text-align:center;
@@ -109,7 +109,7 @@ header p{
 }
 
 /* ============================================================
-   TABS — like dealer's position indicators
+   TABS, like dealer's position indicators
    ============================================================ */
 .tabs{
   display:flex;justify-content:center;gap:0;
@@ -136,7 +136,7 @@ header p{
   content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--brass)}
 
 /* ============================================================
-   PANELS — table positions
+   PANELS, table positions
    ============================================================ */
 .panel{
   background:var(--felt-light);
@@ -219,7 +219,7 @@ input:focus, textarea:focus, select:focus{border-color:var(--brass)}
 input::placeholder, textarea::placeholder{color:var(--cream-faint);font-style:italic}
 
 /* ============================================================
-   CONFIDENCE — POKER CHIPS
+   CONFIDENCE, POKER CHIPS
    ============================================================ */
 .confidence-row{
   display:flex;gap:10px;margin-top:12px;
@@ -268,7 +268,7 @@ input::placeholder, textarea::placeholder{color:var(--cream-faint);font-style:it
 .confidence-row{margin-bottom:32px}
 
 /* ============================================================
-   BUTTONS — felt-table action bars
+   BUTTONS, felt-table action bars
    ============================================================ */
 button{
   font-family:var(--mono);font-size:11.5px;letter-spacing:0.18em;text-transform:uppercase;
@@ -296,7 +296,7 @@ button.ghost:hover{background:var(--cream-faint);color:var(--suit-black);border-
 #save-btn::after{content:" ♠";color:var(--card-red)}
 
 /* ============================================================
-   CARDS — betting slips
+   CARDS, betting slips
    ============================================================ */
 .card{
   background:var(--card);color:var(--suit-black);
@@ -355,7 +355,7 @@ button.ghost:hover{background:var(--cream-faint);color:var(--suit-black);border-
 .card .row button.ghost:hover{background:#b8a780;color:var(--suit-black)}
 
 /* ============================================================
-   STATS — dealer's tray
+   STATS, dealer's tray
    ============================================================ */
 .stats{
   display:grid;grid-template-columns:repeat(4, 1fr);gap:0;
@@ -402,7 +402,7 @@ button.ghost:hover{background:var(--cream-faint);color:var(--suit-black);border-
 }
 
 /* ============================================================
-   FOOTER — colophon
+   FOOTER, colophon
    ============================================================ */
 footer{
   text-align:center;margin-top:36px;padding:32px 0 48px;
@@ -495,14 +495,14 @@ footer a:hover{color:var(--brass-bright)}
     <label>What you're predicting will happen</label>
     <textarea id="d-prediction" placeholder="Be specific. Numbers if you have them. Time-bound."></textarea>
 
-    <label>The chip · how confident? <span class="helper">be honest — calibration only works if you're honest</span></label>
+    <label>The chip · how confident? <span class="helper">be honest, calibration only works if you're honest</span></label>
     <div class="confidence-row" id="confidence-row">
-      <button data-c="20" title="20% — long shot">20</button>
-      <button data-c="40" title="40% — leaning">40</button>
-      <button data-c="55" title="55% — slight edge">55</button>
-      <button data-c="70" title="70% — likely">70</button>
-      <button data-c="85" title="85% — quite confident">85</button>
-      <button data-c="95" title="95% — very confident">95</button>
+      <button data-c="20" title="20%, long shot">20</button>
+      <button data-c="40" title="40%, leaning">40</button>
+      <button data-c="55" title="55%, slight edge">55</button>
+      <button data-c="70" title="70%, likely">70</button>
+      <button data-c="85" title="85%, quite confident">85</button>
+      <button data-c="95" title="95%, very confident">95</button>
     </div>
 
     <label>Review date <span class="helper">when can you tell how it turned out?</span></label>
@@ -566,7 +566,7 @@ footer a:hover{color:var(--brass-bright)}
 <footer>
   <p>Inspired by Annie Duke (<em>Thinking in Bets</em>) and Shane Parrish's decision journal.<br>
   <a href="https://github.com/thebigjah/decision-journal">source</a></p>
-  <div class="credit">— PURCELLVENTURES.CO —</div>
+  <div class="credit">, PURCELLVENTURES.CO,</div>
 </footer>
 
 </div>
@@ -646,7 +646,7 @@ function renderDue() {
   const today = todayKey();
   const due = decisions.filter(d => !d.reviewed && (d.reviewDate || '') <= today).sort((a, b) => a.reviewDate.localeCompare(b.reviewDate));
   const el = document.getElementById('due-list');
-  if (!due.length) { el.innerHTML = '<div class="empty">Nothing showing. The table is quiet — come back another day.</div>'; return; }
+  if (!due.length) { el.innerHTML = '<div class="empty">Nothing showing. The table is quiet, come back another day.</div>'; return; }
   el.innerHTML = due.map(d => renderCard(d, true)).join('');
 }
 
@@ -742,7 +742,7 @@ function renderStats() {
     return { b, total, hits, actual };
   });
 
-  // === Calibration SVG chart — green felt theme ===
+  // === Calibration SVG chart, green felt theme ===
   const PAD = 36, W = 320, H = 320;
   const scale = (pct) => PAD + (pct / 100) * (W - 2 * PAD);
   const yScale = (pct) => (H - PAD) - (pct / 100) * (H - 2 * PAD);
@@ -791,7 +791,7 @@ function renderStats() {
         <div style="display:grid;grid-template-columns:auto 1fr auto auto;gap:14px;padding:10px 0;border-bottom:1px solid var(--rule);align-items:center;">
           <span style="color:var(--brass-bright);font-family:var(--display);font-style:italic;font-size:18px;">${r.b}%</span>
           <span style="color:var(--cream-faint);">${r.total ? '●'.repeat(Math.min(r.total, 24)) : ''}</span>
-          <span style="color:${r.actual == null ? 'var(--cream-faint)' : (Math.abs(r.actual - r.b) < 15 ? 'var(--sage)' : 'var(--card-red-light)')};font-family:var(--display);font-style:italic;font-size:18px;">${r.actual == null ? '—' : r.actual + '%'}</span>
+          <span style="color:${r.actual == null ? 'var(--cream-faint)' : (Math.abs(r.actual - r.b) < 15 ? 'var(--sage)' : 'var(--card-red-light)')};font-family:var(--display);font-style:italic;font-size:18px;">${r.actual == null ? ', ' : r.actual + '%'}</span>
           <span style="color:var(--cream-dim);">${r.total}</span>
         </div>
       `).join('')}
